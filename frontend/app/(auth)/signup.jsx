@@ -35,6 +35,9 @@ const SignUp = () => {
   const [phoneNumber, setPhoneNumber] = useState("");
   const [farmSize, setFarmSize] = useState(""); // For farmers
   const [rating, setRating] = useState(""); // For vendors/experts
+  const [otp, setOtp] = useState(""); // OTP input
+  const [isOtpSent, setIsOtpSent] = useState(false); // Flag to check if OTP is sent
+  const [isOtpVerified, setIsOtpVerified] = useState(false); // Flag for OTP verification
 
   const handleSignUp = async () => {
     // Check if all required fields are filled
@@ -109,42 +112,75 @@ const SignUp = () => {
       return;
     }
 
+    // Step 1: Send OTP to email
     try {
       const res = await axios.post(
-        `${process.env.EXPO_PUBLIC_BACKEND_URI}/api/auth/signup`,
-        {
-          name,
-          age: Number(age),
-          gender,
-          phoneNumber: Number(phoneNumber),
-          farmSize: Number(farmSize),
-          address,
-          cnic: Number(cnic),
-          rating,
-          type,
-          email,
-          password,
-        }
+        `${process.env.EXPO_PUBLIC_BACKEND_URI}/api/email/sendOTPsign`,
+        { email }
       );
-      if (!res.data.success) {
+      if (res.status === 200) {
+        setIsOtpSent(true);
+        Alert.alert("OTP Sent", "An OTP has been sent to your email.");
+      } else {
         ToastAndroid.show(res.data.message, ToastAndroid.SHORT);
-        return;
       }
-      await AsyncStorage.setItem("token", res.data.token);
-      router.push("/Home");
     } catch (error) {
       ToastAndroid.show(error.message, ToastAndroid.SHORT);
     }
+  };
 
-    // If all checks pass
-    // Alert.alert("Success", `Welcome, ${name}!`);
-    // router.push("/login");
+  const verifyOtpAndSignUp = async () => {
+    // Step 2: Verify OTP
+    if (!otp) {
+      Alert.alert("Error", "Please enter the OTP.");
+      return;
+    }
+
+    try {
+      const res = await axios.post(
+        `${process.env.EXPO_PUBLIC_BACKEND_URI}/api/email/verify-otp`,
+        { email, otp }
+      );
+
+      if (res.status === 200) {
+        setIsOtpVerified(true);
+        // Step 3: Proceed to signup if OTP is verified
+        const signupRes = await axios.post(
+          `${process.env.EXPO_PUBLIC_BACKEND_URI}/api/auth/signup`,
+          {
+            name,
+            age: Number(age),
+            gender,
+            phoneNumber: Number(phoneNumber),
+            farmSize: Number(farmSize),
+            address,
+            cnic: Number(cnic),
+            rating,
+            type,
+            email,
+            password,
+          }
+        );
+
+        if (signupRes.status === 200) {
+          await AsyncStorage.setItem("token", signupRes.data.token);
+          router.push("/Home");
+        } else {
+          ToastAndroid.show(signupRes.data.message, ToastAndroid.SHORT);
+        }
+      } else {
+        Alert.alert("Invalid OTP", "The OTP entered is incorrect.");
+      }
+    } catch (error) {
+      ToastAndroid.show(error.message, ToastAndroid.SHORT);
+    }
   };
 
   return (
     <View style={styles.container}>
       <Text style={styles.title}>{type ? `${type} Sign Up` : "Sign Up"}</Text>
 
+      {/* Normal form fields */}
       <TextInput
         placeholder="Name"
         style={styles.input}
@@ -220,18 +256,24 @@ const SignUp = () => {
         />
       )}
 
-      {/* Additional Fields for Expert */}
-      {type === "expert" && (
-        <TextInput
-          placeholder="Rating"
-          style={styles.input}
-          value={rating}
-          onChangeText={setRating}
-          keyboardType="numeric"
-        />
+      {/* OTP Input */}
+      {isOtpSent && !isOtpVerified && (
+        <>
+          <TextInput
+            placeholder="Enter OTP"
+            style={styles.input}
+            value={otp}
+            onChangeText={setOtp}
+            keyboardType="numeric"
+          />
+          <Button title="Verify OTP and Sign Up" onPress={verifyOtpAndSignUp} />
+        </>
       )}
 
-      <Button title="Sign Up" onPress={handleSignUp} color="#6A9E00" />
+      {/* Button to trigger OTP sending */}
+      {!isOtpSent && (
+        <Button title="Send OTP" onPress={handleSignUp} color="#6A9E00" />
+      )}
     </View>
   );
 };

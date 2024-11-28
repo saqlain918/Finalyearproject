@@ -45,6 +45,7 @@ const Login = () => {
     }
 
     try {
+      setLoading(true);
       const res = await axios.post(
         `${process.env.EXPO_PUBLIC_BACKEND_URI}/api/auth/login`,
         {
@@ -52,15 +53,25 @@ const Login = () => {
           password,
         }
       );
+
       if (!res.data.success) {
         ToastAndroid.show(res.data.message, ToastAndroid.SHORT);
         return;
       }
+
+      // Store token in AsyncStorage
       await AsyncStorage.setItem("token", res.data.token);
 
-      router.replace("/Home");
+      // Check if user is admin and navigate accordingly
+      if (res.data.user.role === "admin") {
+        router.replace("/adHome"); // Navigate to Admin Home page
+      } else {
+        router.replace("/Home"); // Navigate to regular Home page
+      }
     } catch (error) {
       ToastAndroid.show(error.message, ToastAndroid.SHORT);
+    } finally {
+      setLoading(false);
     }
   };
 
