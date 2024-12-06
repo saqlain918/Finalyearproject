@@ -7,10 +7,12 @@ import {
   StyleSheet,
   Alert,
   ToastAndroid,
+  TouchableOpacity,
 } from "react-native";
 import { useLocalSearchParams, useRouter } from "expo-router";
 import axios from "axios";
 import AsyncStorage from "@react-native-async-storage/async-storage";
+import * as ImagePicker from "expo-image-picker";
 
 // Email regex for validation
 const emailRegex = /^[a-zA-Z0-9._-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,6}$/;
@@ -246,15 +248,16 @@ const SignUp = () => {
       )}
 
       {/* Additional Fields for Vendor */}
-      {type === "vendor" && (
-        <TextInput
-          placeholder="Rating"
-          style={styles.input}
-          value={rating}
-          onChangeText={setRating}
-          keyboardType="numeric"
-        />
-      )}
+      {type === "vendor" ||
+        (type === "expert" && (
+          <TextInput
+            placeholder="Rating"
+            style={styles.input}
+            value={rating}
+            onChangeText={setRating}
+            keyboardType="numeric"
+          />
+        ))}
 
       {/* OTP Input */}
       {isOtpSent && !isOtpVerified && (

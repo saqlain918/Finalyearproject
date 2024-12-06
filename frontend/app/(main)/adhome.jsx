@@ -15,30 +15,30 @@ const Home = () => {
   // State for hero image index
   const [currentImageIndex, setCurrentImageIndex] = useState(0);
 
-  // // Array of hero images
-  // const heroImages = [
-  //   require("../../assets/icons/agri.png"),
-  //   require("../../assets/icons/farm1.png"),
-  //   require("../../assets/icons/farm2.png"),
-  //   require("../../assets/icons/farm3.png"),
-  //   require("../../assets/icons/farm4.png"),
-  //   require("../../assets/icons/farm5.png"),
-  //   require("../../assets/icons/farm6.png"),
-  //   require("../../assets/icons/farm7.png"),
-  //   require("../../assets/icons/farm8.png"),
-  //   require("../../assets/icons/farm9.png"),
-  //   require("../../assets/icons/farm10.png"),
-  //   require("../../assets/icons/farm11.png"),
-  // ];
+  // Array of hero images
+  const heroImages = [
+    require("../../assets/icons/agri.png"),
+    require("../../assets/icons/farm1.png"),
+    require("../../assets/icons/farm2.png"),
+    require("../../assets/icons/farm3.png"),
+    require("../../assets/icons/farm4.png"),
+    require("../../assets/icons/farm5.png"),
+    require("../../assets/icons/farm6.png"),
+    require("../../assets/icons/farm7.png"),
+    require("../../assets/icons/farm8.png"),
+    require("../../assets/icons/farm9.png"),
+    require("../../assets/icons/farm10.png"),
+    require("../../assets/icons/farm11.png"),
+  ];
 
-  // // Update image every 3 seconds
-  // useEffect(() => {
-  //   const interval = setInterval(() => {
-  //     setCurrentImageIndex((prevIndex) => (prevIndex + 1) % heroImages.length);
-  //   }, 3000);
+  // Update image every 3 seconds
+  useEffect(() => {
+    const interval = setInterval(() => {
+      setCurrentImageIndex((prevIndex) => (prevIndex + 1) % heroImages.length);
+    }, 3000);
 
-  //   return () => clearInterval(interval); // Clear interval on component unmount
-  // }, []);
+    return () => clearInterval(interval); // Clear interval on component unmount
+  }, []);
 
   return (
     <ScrollView contentContainerStyle={styles.container}>

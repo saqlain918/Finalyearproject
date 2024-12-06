@@ -63,10 +63,26 @@ const Login = () => {
       await AsyncStorage.setItem("token", res.data.token);
 
       // Check if user is admin and navigate accordingly
-      if (res.data.user.role === "admin") {
-        router.replace("/adHome"); // Navigate to Admin Home page
+      if (res.data.user.isAdmin) {
+        router.replace("/adhome"); // Navigate to Admin Home page
       } else {
-        router.replace("/Home"); // Navigate to regular Home page
+        router.replace({
+          pathname:
+            res.data.user.type === "vendor"
+              ? "/ven"
+              : res.data.user.type === "expert"
+              ? "/expert"
+              : "/Home",
+          params: {
+            name: res.data.user.name,
+            email: res.data.user.email,
+            age: res.data.user.age,
+            gender: res.data.user.gender,
+            cnic: res.data.user.cnic,
+            phoneNumber: res.data.user.phoneNumber,
+            address: res.data.user.address,
+          },
+        }); // Navigate to regular Home page
       }
     } catch (error) {
       ToastAndroid.show(error.message, ToastAndroid.SHORT);

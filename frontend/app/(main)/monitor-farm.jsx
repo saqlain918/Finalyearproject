@@ -14,7 +14,7 @@ const MonitorFarm = () => {
         {/* Cultivation Suggestion */}
         <TouchableOpacity
           style={styles.optionCard}
-          onPress={() => router.push("/cultivation-suggestion")} // Placeholder route for Cultivation Suggestion
+          onPress={() => router.push("/CropSuggestion")}
         >
           <Image
             source={require("../../assets/icons/cultivation.png")} // Replace with your actual icon
@@ -26,19 +26,19 @@ const MonitorFarm = () => {
         {/* Update Fertilizer */}
         <TouchableOpacity
           style={styles.optionCard}
-          onPress={() => router.push("/update-fertilizer")} // Placeholder route for Update Fertilizer
+          onPress={() => router.push("/cropInfo")} // Correct route
         >
           <Image
             source={require("../../assets/icons/fertilizer.png")} // Replace with your actual icon
             style={styles.optionIcon}
           />
-          <Text style={styles.optionText}>Update Fertilizer</Text>
+          <Text style={styles.optionText}>Crop Info Screen</Text>
         </TouchableOpacity>
 
         {/* Farm Dashboard */}
         <TouchableOpacity
           style={styles.optionCard}
-          onPress={() => router.push("/farm-dashboard")} // Placeholder route for Farm Dashboard
+          onPress={() => router.push("/FarmDashboard")} // Correct the route
         >
           <Image
             source={require("../../assets/icons/dashboard.png")} // Replace with your actual icon

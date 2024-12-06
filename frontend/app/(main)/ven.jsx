@@ -1,4 +1,4 @@
-import { useState, useEffect } from "react";
+import React, { useState, useEffect } from "react";
 import {
   View,
   Text,
@@ -7,17 +7,15 @@ import {
   ScrollView,
   Image,
 } from "react-native";
-import { useLocalSearchParams, useRouter } from "expo-router";
+import { useRouter } from "expo-router";
 
 const Home = () => {
   const router = useRouter();
 
-  const profileData = useLocalSearchParams();
-
   // State for hero image index
   const [currentImageIndex, setCurrentImageIndex] = useState(0);
 
-  // Array of hero images (10 PNGs)
+  // Array of hero images
   const heroImages = [
     require("../../assets/icons/agri.png"),
     require("../../assets/icons/farm1.png"),
@@ -33,11 +31,11 @@ const Home = () => {
     require("../../assets/icons/farm11.png"),
   ];
 
-  // Update hero image every 3 seconds
+  // Update image every 3 seconds
   useEffect(() => {
     const interval = setInterval(() => {
       setCurrentImageIndex((prevIndex) => (prevIndex + 1) % heroImages.length);
-    }, 5000);
+    }, 3000);
 
     return () => clearInterval(interval); // Clear interval on component unmount
   }, []);
@@ -47,22 +45,15 @@ const Home = () => {
       {/* Header Section */}
       <View style={styles.header}>
         <Text style={styles.logo}>Cultivation For Naives</Text>
-        <TouchableOpacity
-          onPress={() =>
-            router.push({
-              pathname: "profile",
-              params: profileData,
-            })
-          }
-        >
+        <TouchableOpacity style={styles.notificationIcon}>
           <Image
-            source={require("../../assets/icons/user.png")}
-            style={styles.userAvatar}
+            source={require("../../assets/icons/bell.png")}
+            style={styles.notificationImage}
           />
         </TouchableOpacity>
       </View>
 
-      {/* Hero Section (Sliding Bar) */}
+      {/* Hero Section */}
       <View style={styles.heroSection}>
         <Image
           source={heroImages[currentImageIndex]} // Dynamic image source
@@ -77,7 +68,7 @@ const Home = () => {
       <View style={styles.dashboardSection}>
         <Text style={styles.sectionTitle}>Dashboard</Text>
         <View style={styles.dashboardGrid}>
-          {/* Create Thread */}
+          {/* Manage Profile */}
           <TouchableOpacity
             style={styles.dashboardCard}
             onPress={() => router.push("/create-thread")}
@@ -134,13 +125,13 @@ const Home = () => {
           {/* Handle Equipment */}
           <TouchableOpacity
             style={styles.featureCard}
-            onPress={() => router.push("/handle-equipment")}
+            onPress={() => router.push("/zain-equipment")}
           >
             <Image
               source={require("../../assets/icons/Handle-Equipment.png")}
               style={styles.cardIcon}
             />
-            <Text style={styles.cardTitle}>Handle Equipment</Text>
+            <Text style={styles.cardTitle}>Zain Equipment</Text>
           </TouchableOpacity>
 
           {/* Forecast Yield */}
@@ -238,12 +229,14 @@ const styles = StyleSheet.create({
     fontSize: 24,
     fontWeight: "bold",
   },
-  userAvatar: {
-    width: 40,
-    height: 40,
-    borderRadius: 20,
-    borderWidth: 2,
-    borderColor: "#fff",
+  notificationIcon: {
+    backgroundColor: "#fff",
+    padding: 8,
+    borderRadius: 50,
+  },
+  notificationImage: {
+    width: 30,
+    height: 30,
   },
   heroSection: {
     alignItems: "center",
@@ -258,7 +251,7 @@ const styles = StyleSheet.create({
   },
   heroText: {
     marginTop: 10,
-    fontSize: 18,
+    fontSize: 20,
     fontWeight: "bold",
     color: "#333",
     textAlign: "center",
@@ -343,43 +336,6 @@ const styles = StyleSheet.create({
     shadowOpacity: 0.1,
     shadowRadius: 5,
     elevation: 2,
-  },
-  modalContainer: {
-    flex: 1,
-    justifyContent: "center",
-    alignItems: "center",
-    backgroundColor: "rgba(0, 0, 0, 0.5)",
-  },
-  modalContent: {
-    width: "90%",
-    backgroundColor: "#fff",
-    padding: 20,
-    borderRadius: 10,
-    alignItems: "center",
-  },
-  modalTitle: {
-    fontSize: 20,
-    fontWeight: "bold",
-    marginBottom: 20,
-  },
-  modalAvatar: {
-    width: 80,
-    height: 80,
-    borderRadius: 40,
-    marginBottom: 20,
-  },
-  input: {
-    width: "100%",
-    borderWidth: 1,
-    borderColor: "#ccc",
-    padding: 10,
-    borderRadius: 5,
-    marginBottom: 10,
-  },
-  modalButtons: {
-    flexDirection: "row",
-    justifyContent: "space-around",
-    width: "100%",
   },
 });
 
